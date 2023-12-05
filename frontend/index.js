@@ -1,33 +1,34 @@
+const axios = require('axios');
+
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
-  const axios = require('axios');
-const React = require('react');
 
-// Fetch data from Endpoint A
-axios.get('http://example.com/endpointA')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Error fetching data from Endpoint A:', error);
-  });
 
-// Fetch data from Endpoint B
-// Assuming you're using a library like React
+  // Fetch data from Endpoint A
+  axios.get('http://example.com/endpointA')
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data from Endpoint A:', error);
+    });
 
-// Learner Card component
-function LearnerCard({ learner }) {
-  return (
-    // <div className="card" onClick={handleClick}>
-      {/* Render learner details */}
-    </div>
-  );
+  // Fetch data from Endpoint B
+  // Assuming you're using a library like React
 
-  // Event handler
-  function handleClick(event) {
-    const card = event.currentTarget;
-    console.log('Clicked card:', card);
+  // Learner Card component
+  function LearnerCard({ learner }) {
+    return React.createElement('div', null);
   }
+
+  // Fetch data from Endpoint B
+  axios.get('http://example.com/endpointB')
+    .then(response => {
+      console.log(response.data);
+    })
+    .catch(error => {
+      console.error('Error fetching data from Endpoint B:', error);
+    });
 
   // Assuming `data` is your combined data from the previous step
   function renderLearnerCards(data) {
@@ -44,8 +45,6 @@ function LearnerCard({ learner }) {
   const footer = document.querySelector('footer')
   const currentYear = new Date().getFullYear()
   footer.textContent = `© BLOOM INSTITUTE OF TECHNOLOGY ${currentYear}`
-
-  const axios = require('axios');
 
   // Fetch data from both endpoints
   const requestA = axios.get('http://example.com/endpointA');
