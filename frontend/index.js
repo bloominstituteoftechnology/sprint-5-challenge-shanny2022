@@ -7,7 +7,8 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
 
   // Fetch data from Endpoint A
- 
+
+
 
   async function renderLearnerCards() {
     const [learnersResponse, mentorsResponse] = await Promise.all([
@@ -24,25 +25,43 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
     const container = document.querySelector('.cards');
 
-    learners.forEach(learner => {
-      const card = document.createElement('div');
-      card.className = 'card';
+learners.forEach(learner => {
+const card = createCard(learner);
+container.appendChild(card);
+});
 
-      const name = document.createElement('h2');
-      name.textContent = learner.name;
+// Return the processed data
+return learners;
+}
 
-      card.appendChild(name);
-      container.appendChild(card);
-    });
+function createCard(learner) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.style.border = '1px solid black';
+  card.style.margin = '10px';
+  card.style.padding = '10px';
 
+  const name = document.createElement('h2');
+  name.textContent = learner.name;
+  name.style.color = 'blue';
+  card.appendChild(name);
 
-    document.addEventListener('DOMContentLoaded', function () {
-      renderLearnerCards();
+  const email = document.createElement('p');
+  email.textContent = learner.email;
+  card.appendChild(email);
+
+  const mentorList = document.createElement('ul');
+  learner.mentors.forEach(mentor => {
+    const mentorItem = document.createElement('li');
+    mentorItem.textContent = mentor;
+    mentorList.appendChild(mentorItem);
   });
+  card.appendChild(mentorList);
 
-  }
-
+  return card;
+}
   renderLearnerCards();
+
 
   const footer = document.querySelector('footer')
   const currentYear = new Date().getFullYear()
