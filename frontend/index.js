@@ -7,113 +7,46 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
 
   // Fetch data from Endpoint A
-  const response = await axios.get('http://example.com/endpoint');
-  console.log(response.data);
+  const axios = require('axios');
 
-  axios.get('http://example.com/endpoint')
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    if (error.response) {
+  async function renderLearnerCards() {
+    const [learnersResponse, mentorsResponse] = await Promise.all([
+      axios.get('http://localhost:3003/api/learners'),
+      axios.get('http://localhost:3003/api/mentors'),
+    ]);
 
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-    } else if (error.request) {
-      // The request was made but no response was received
-      console.log(error.request);
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-    }
-    console.log(error.config);
-  });
+    const learners = learnersResponse.data;
+    const mentors = mentorsResponse.data;
 
-  // Fetch data from Endpoint B
-  // Assuming you're using a library like React
-  function MyComponent() {
-    const [data, setData] = React.useState(null);
-    const [error, setError] = React.useState(null);
-
-    React.useEffect(() => {
-      axios.get('http://example.com/endpoint')
-        .then(response => {
-          setData(response.data);
-        })
-        .catch(err => {
-          setError(err);
-          console.error('Error fetching data:', err);
-        });
-    }, []); // Empty dependency array means this effect runs once on mount
-
-
-    }
-
-  module.exports = MyComponent;
-
-  // Learner Card component
-  function LearnerCard({ learner }) {
-    return React.createElement('div', null);
-  }
-
-  // Fetch data from Endpoint B
-  axios.get('http://example.com/endpointB')
-    .then(response => {
-      console.log(response.data);
-    })
-    .catch(error => {
-      console.error('Error fetching data from Endpoint B:', error);
+    learners.forEach(learner => {
+      learner.mentors = learner.mentors.map(id => mentors.find(mentor => mentor.id === id).name);
     });
 
-  // Assuming `data` is your combined data from the previous step
-  function renderLearnerCards(data) {
-    const container = document.getElementById('container'); // Replace with your actual container
+    const container = document.querySelector('.cards');
 
-   data.forEach(learner => {
-    const card = document.createElement('div');
+    learners.forEach(learner => {
+      const card = document.createElement('div');
       card.className = 'card';
 
       const name = document.createElement('h2');
       name.textContent = learner.name;
 
       card.appendChild(name);
-
       container.appendChild(card);
-   });
-  }
-
-
-  renderLearnerCards(data);
-
-  const footer = document.querySelector('footer')
-  const currentYear = new Date().getFullYear()
-  footer.textContent = `© BLOOM INSTITUTE OF TECHNOLOGY ${currentYear}`
-
-  // Fetch data from both endpoints
-  const requestA = axios.get('http://example.com/endpointA');
-  const requestB = axios.get('http://example.com/endpointB');
-
-  Promise.all([requestA, requestB])
-    .then(responses => {
-      // responses[0] contains the response from Endpoint A
-      // responses[1] contains the response from Endpoint B
-
-      // Combine the data into a single data structure
-      const combinedData = {
-        dataA: responses[0].data,
-        dataB: responses[1].data
-      };
-
-      console.log(combinedData);
-    })
-    .catch(error => {
-      console.error('Error fetching data:', error);
     });
 
 
+    document.addEventListener('DOMContentLoaded', function () {
+      renderLearnerCards();
+  });
+
+  }
+
+  renderLearnerCards();
+
+  const footer = document.querySelector('footer')
+  const currentYear = new Date().getFullYear()
+  footer.textContent = `© BLOOM INSTITUTE OF TECHNOLOGY ${2023}`
   // 👆 WORK WORK ABOVE THIS LINE 👆
 }
 
