@@ -1,13 +1,13 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
-const axios = require('axios');
+
 
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
 
 
   // Fetch data from Endpoint A
-  const axios = require('axios');
+ 
 
   async function renderLearnerCards() {
     const [learnersResponse, mentorsResponse] = await Promise.all([
