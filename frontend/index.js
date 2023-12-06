@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 const axios = require('axios');
 
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
@@ -5,14 +7,16 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
 
   // Fetch data from Endpoint A
-  const axios = require('axios');
+  const response = await axios.get('http://example.com/endpoint');
+  console.log(response.data);
 
-axios.get('http://example.com/endpoint')
+  axios.get('http://example.com/endpoint')
   .then(response => {
     console.log(response.data);
   })
   .catch(error => {
     if (error.response) {
+
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
       console.log(error.response.data);
@@ -48,17 +52,6 @@ axios.get('http://example.com/endpoint')
 
     }
 
-    if (!data) {
-      return <div>Loading...</div>;
-    }
-
-    return (
-      <div>
-        {/* Render your data here */}
-      </div>
-    );
-  }
-
   module.exports = MyComponent;
 
   // Learner Card component
@@ -79,11 +72,19 @@ axios.get('http://example.com/endpoint')
   function renderLearnerCards(data) {
     const container = document.getElementById('container'); // Replace with your actual container
 
-    data.forEach(learner => {
-      const card = <LearnerCard learner={learner} />;
+   data.forEach(learner => {
+    const card = document.createElement('div');
+      card.className = 'card';
+
+      const name = document.createElement('h2');
+      name.textContent = learner.name;
+
+      card.appendChild(name);
+
       container.appendChild(card);
-    });
+   });
   }
+
 
   renderLearnerCards(data);
 
