@@ -59,6 +59,7 @@ function createCard(learner) {
   card.appendChild(mentorList);
 
   return card;
+
 }
   renderLearnerCards();
 
