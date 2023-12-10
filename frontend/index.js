@@ -66,41 +66,6 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
     const card = createCard(learner);
     container.appendChild(card);
   });
-  import axios from 'axios';
-
-  async function fetchData() {
-    const [learnersResponse, mentorsResponse] = await Promise.all([
-      axios.get('http://localhost:3003/api/learners'),
-      axios.get('http://localhost:3003/api/mentors')
-    ]);
-
-    const mentors = mentorsResponse.data.reduce((acc, mentor) => {
-      acc[mentor.id] = mentor.name;
-      return acc;
-    }, {});
-
-    return learnersResponse.data.map(learner => ({
-      ...learner,
-      mentors: learner.mentors.map(id => mentors[id])
-    }));
-  }
-
-  function createCard(learner) {
-    // Create card element and set its contents and class names based on the learner object
-    // Attach an event listener to handle user interactions
-  }
-
-  async function renderCards() {
-    const learners = await fetchData();
-    const container = document.querySelector('.cards');
-
-    learners.forEach(learner => {
-      const card = createCard(learner);
-      container.appendChild(card);
-    });
-  }
-
-  renderCards();
 
   // Select the footer element
 const footer = document.querySelector('footer');
