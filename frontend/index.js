@@ -5,92 +5,113 @@
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
 
-async function fetchData() {
-  const [learnersResponse, mentorsResponse] = await Promise.all([
+  axios.all([
     axios.get('http://localhost:3003/api/learners'),
     axios.get('http://localhost:3003/api/mentors'),
-  ]);
+  ]).then(axios.spread((learnersResponse, mentorsResponse) => {
+    const learners = learnersResponse.data;
+    const mentors = mentorsResponse.data;
 
-  const learners = learnersResponse.data;
-  const mentors = mentorsResponse.data;
+    learners.forEach(learner => {
+      learner.mentors = learner.mentors.map(id => {
+        const mentor = mentors.find(mentor => mentor.id === id);
+        return mentor ? mentor.name : 'Mentor not found';
+      });
+    });
 
-  learners.forEach(learner => {
-    learner.mentors = learner.mentors.map(id => mentors.find(mentor => mentor.id === id).name);
-  });
+    console.log(learners); // This should now log the learners array with mentor names instead of IDs
+  }));
+  function createCard(learner) {
+    // Create a new div element for the card
+    const card = document.createElement('div');
+    card.className = 'card';
 
-  return learners;
-}
-function createCard(learner) {
+    // Add the learner's full name to the card
+    const name = document.createElement('h2');
+    name.textContent = learner.fullName;
+    name.className = 'learner-name'; // Set the class name as per the design
+    card.appendChild(name);
+
+    // Add the learner's email to the card
+    const email = document.createElement('p');
+    email.textContent = learner.email;
+    email.className = 'learner-email'; // Set the class name as per the design
+    card.appendChild(email);
+
+    // Add the learner's mentors to the card
+    const mentors = document.createElement('ul');
+    mentors.className = 'mentor-list'; // Set the class name as per the design
+    learner.mentors.forEach(mentor => {
+      const mentorItem = document.createElement('li');
+      mentorItem.textContent = mentor;
+      mentorItem.className = 'mentor-name'; // Set the class name as per the design
+      mentors.appendChild(mentorItem);
+    });
+    card.appendChild(mentors);
+
+    // Add an event listener to the card
+    card.addEventListener('click', () => {
+      // Change the text content and class names of some elements as per the design
+      name.textContent = 'Clicked!';
+      name.className = 'clicked-name';
+      email.className = 'clicked-email';
+      mentors.className = 'clicked-mentors';
+    });
+
+    return card;
+  }
+
+  // Assuming container is a DOM element where the cards are appended
   learners.forEach(learner => {
     const card = createCard(learner);
     container.appendChild(card);
   });
-}
-function displayCards(learners) {
- learners.forEach(learner => {
-    const card = createCard(learner);
-    container.appendChild(card);
-  });
-}
-async function init() {
-}
-async function highlightMentor(learnerId, mentorId) {
-  const learner = learners.find(l => l.id === learnerId);
-  const mentor = learner.mentors.find(m => m.id === mentorId);
+  import axios from 'axios';
 
-  const cards = document.querySelectorAll('.card');
-  cards.forEach(card => {
-    if(card.innerText.includes(learner.fullName)) {
-      const mentorsList = card.querySelector('ul');
-      const mentorItem = mentorsList.querySelector(`li:contains(${mentor})`);
-      mentorItem.classList.add('highlight');
-    }
-  });
-}
-async function unhighlightMentor(learnerId, mentorId) {
-  const learner = learners.find(l => l.id === learnerId);
-  const mentor = learner.mentors.find(m => m.id === mentorId);
+  async function fetchData() {
+    const [learnersResponse, mentorsResponse] = await Promise.all([
+      axios.get('http://localhost:3003/api/learners'),
+      axios.get('http://localhost:3003/api/mentors')
+    ]);
 
-async function toggleMentorHighlight(learnerId, mentorId) {
-  const isHighlighted = mentorId.classList.contains('highlight');
+    const mentors = mentorsResponse.data.reduce((acc, mentor) => {
+      acc[mentor.id] = mentor.name;
+      return acc;
+    }, {});
 
-  if(isHighlighted) {
-    await unhighlightMentor(learnerId, mentorId);
-  } else {
-    await highlightMentor(learnerId, mentorId);
+    return learnersResponse.data.map(learner => ({
+      ...learner,
+      mentors: learner.mentors.map(id => mentors[id])
+    }));
   }
-async function toggleHighlight(learnerId, mentorId) {
-  const isHighlighted = await toggleMentorHighlight(learnerId, mentorId);
 
-  const mentorItem = document.querySelector(`li:contains(${mentorId})`);
-  if(isHighlighted) {
-    mentorItem.classList.add('highlight');
-  } else {
-    mentorItem.classList.remove('highlight');
+  function createCard(learner) {
+    // Create card element and set its contents and class names based on the learner object
+    // Attach an event listener to handle user interactions
   }
-async function fetchData() {
-  const response = await axios.get('http://localhost:3003/api/data');
-  return response.data;
-}
-// Add event listener to each card
-card.addEventListener('click', (event) => {
-  // Check if target is a mentor item
-  if(event.target.tagName === 'LI') {
-    // Get learner and mentor ids
-    const learnerId = learner.id;
-    const mentorId = event.target.textContent;
 
-    // Call toggle highlight function
-    toggleHighlight(learnerId, mentorId);
+  async function renderCards() {
+    const learners = await fetchData();
+    const container = document.querySelector('.cards');
+
+    learners.forEach(learner => {
+      const card = createCard(learner);
+      container.appendChild(card);
+    });
   }
-// Create a new card for the learner
- const card = createCard({ fullName: 'Bob Johnson' });
-// Append the card to the container
- container.appendChild(card);
-// Select the footer element
+
+  renderCards();
+
+  // Select the footer element
 const footer = document.querySelector('footer');
+
 // Set the text content of the footer
 footer.textContent = "© BLOOM INSTITUTE OF TECHNOLOGY 2023";
+  // 👆 WORK WORK ABOVE THIS LINE 👆
+}
+
+
+
 // ❗ DO NOT CHANGE THE CODE  BELOW
 if (typeof module !== 'undefined' && module.exports) module.exports = { sprintChallenge5 }
 else sprintChallenge5()
