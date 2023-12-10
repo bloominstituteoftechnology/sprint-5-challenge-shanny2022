@@ -11,101 +11,99 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
   ]).then(axios.spread((learnersResponse, mentorsResponse) => {
     const learners = learnersResponse.data;
     const mentors = mentorsResponse.data;
+  }))
 
-    learners.forEach(learner => {
-      learner.mentors = learner.mentors.map(id => {
-        const mentor = mentors.find(mentor => mentor.id === id);
-        return mentor ? mentor.name : 'Mentor not found';
-      });
-    });
+      async function fetchData() {
+        // Fetch data from both endpoints concurrently
+        const [learnersResponse, mentorsResponse] = await Promise.all([
+          axios.get('http://localhost:3003/api/learners'),
+          axios.get('http://localhost:3003/api/mentors'),
+        ]);
 
-    console.log(learners); // This should now log the learners array with mentor names instead of IDs
-  }));
-  function createCard(learner) {
-    // Create a new div element for the card
-    const card = document.createElement('div');
-    card.className = 'card';
+        // Extract the data from the responses
+        const [learners, mentors] = await Promise.all([
+          // Call fetchData function
+          fetchData(),
+          // Call fetchData function
+          fetchData()
+        ]);
 
-    // Add the learner's full name to the card
-    const name = document.createElement('h2');
-    name.textContent = learner.fullName;
-    name.className = 'learner-name'; // Set the class name as per the design
-    card.appendChild(name);
-
-    // Add the learner's email to the card
-    const email = document.createElement('p');
-    email.textContent = learner.email;
-    email.className = 'learner-email'; // Set the class name as per the design
-    card.appendChild(email);
-
-    // Add the learner's mentors to the card
-    const mentors = document.createElement('ul');
-    mentors.className = 'mentor-list'; // Set the class name as per the design
-    learner.mentors.forEach(mentor => {
-      const mentorItem = document.createElement('li');
-      mentorItem.textContent = mentor;
-      mentorItem.className = 'mentor-name'; // Set the class name as per the design
-      mentors.appendChild(mentorItem);
-    });
-    card.appendChild(mentors);
-
-    return card;
-  }
-
-  async function fetchData() {
-    const [learnersResponse, mentorsResponse] = await Promise.all([
-      axios.get('http://localhost:3003/api/learners'),
-      axios.get('http://localhost:3003/api/mentors')
-    ]);
-
-    const mentors = mentorsResponse.data.reduce((acc, mentor) => {
-      acc[mentor.id] = mentor.name;
-      return acc;
-    }, {});
-
-    return learnersResponse.data.map(learner => ({
-      ...learner,
-      mentors: learner.mentors.map(id => mentors[id])
-    }));
-  }
-
-  async function renderCards() {
-    const learners = await fetchData();
-    const container = document.querySelector('.cards');
-
-    learners.forEach(learner => {
-      const card = createCard(learner);
-      container.appendChild(card);
-    });
-    
-
-        // Add an event listener to the card
-    card.addEventListener('click', () => {
-      // Change the text content and class names of some elements as per the design
-      name.textContent = 'Clicked!';
-      name.className = 'clicked-name';
-      email.className = 'clicked-email';
-      mentors.className = 'clicked-mentors';
-
+        // Replace mentor IDs in learners' data with actual mentor names
+        learners.forEach(learner => {
+          learner.mentors = learner.mentors.map(mentorId => {
+            const mentor = mentors.find(mentor => mentor.id === mentorId);
+            return mentor ? mentor.name : 'Unknown Mentor';
+          });
+        }
+        );
+          // Return the combined data
+        return learners;
+      }
+      // Select the container element where cards will be rendered
+      const container = document.getElementById('container');
+      // Fetch learner data and call createCard for each learner
+      const learners = await fetchData();
       learners.forEach(learner => {
         const card = createCard(learner);
-        card.addEventListener('click', (event) => {
-          // Select the specific element within the card
-          const element = card.querySelector('.specific-element-class');
-
-          // Update the text content of the element
-          element.textContent = `New text content for ${learner.name}`;
-        });
         container.appendChild(card);
       });
+      // Create a new Learner Card element
+      function createCard(learner) {
+        // Create a new div element for the card
+        const card = document.createElement('div');
+        card.className = 'card';
 
+        // Create a new h3 element for the learner's name
+        const name = document.createElement('h3');
+        name.textContent = learner.name;
+        card.appendChild(name);
 
-    });
-  }
+        // Create a new ul element for the list of mentors
+        const mentorsList = document.createElement('ul');
+        learner.mentors.forEach(mentor => {
+          const mentorItem = document.createElement('li');
+          mentorItem.textContent = mentor;
+          mentorsList.appendChild(mentorItem);
+        });
+        card.appendChild(mentorsList);
 
+        // Return the Learner Card element
+        return card;
+      }
+      async function renderCards() {
+        // Fetch the combined data
+        const learners = await fetchData();
 
+        // Select the container where the cards will be appended
+        const container = document.querySelector('.cards');
 
-  // Select the footer element
+        // Loop over the data
+        learners.forEach(learner => {
+          // Generate a Learner Card for each learner
+          const card = createCard(learner);
+
+          // Add a click event listener to the card
+          card.addEventListener('click', (event) => {
+            // If the clicked element is the h3 (name), toggle the 'highlight' class
+            if (event.target.tagName === 'H3') {
+              card.classList.toggle('highlight');
+            }
+
+            // If the clicked element is the ul (mentors list), toggle the 'collapsed' class
+            if (event.target.tagName === 'UL') {
+              event.target.classList.toggle('collapsed');
+            }
+          });
+
+          // Append the card to the DOM
+          container.appendChild(card);
+        });
+      }
+
+      // Call the renderCards function
+      renderCards();
+      
+      // Select the footer element
 const footer = document.querySelector('footer');
 
 // Set the text content of the footer
