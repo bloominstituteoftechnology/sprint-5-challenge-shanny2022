@@ -77,8 +77,7 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
       const card = createCard(learner);
       container.appendChild(card);
     });
-  }
-  renderCards();
+    
 
         // Add an event listener to the card
     card.addEventListener('click', () => {
@@ -102,6 +101,8 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
 
     });
+  }
+
 
 
   // Select the footer element
