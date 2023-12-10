@@ -59,7 +59,6 @@ async function toggleMentorHighlight(learnerId, mentorId) {
   } else {
     await highlightMentor(learnerId, mentorId);
   }
-}
 async function toggleHighlight(learnerId, mentorId) {
   const isHighlighted = await toggleMentorHighlight(learnerId, mentorId);
 
@@ -69,32 +68,9 @@ async function toggleHighlight(learnerId, mentorId) {
   } else {
     mentorItem.classList.remove('highlight');
   }
-}
 async function fetchData() {
   const response = await axios.get('http://localhost:3003/api/data');
   return response.data;
-}
-function createCard(learner) {
-  const card = document.createElement('div');
-  card.className = 'card';
-
-  const name = document.createElement('h2');
-  name.textContent = learner.fullName;
-  card.appendChild(name);
-
-  const email = document.createElement('p');
-  email.textContent = learner.email;
-  card.appendChild(email);
-
-  const mentorList = document.createElement('ul');
-  learner.mentors.forEach(mentor => {
-    const mentorItem = document.createElement('li');
-    mentorItem.textContent = mentor;
-    mentorList.appendChild(mentorItem);
-  });
-  card.appendChild(mentorList);
-
-  return card;
 }
 // Add event listener to each card
 card.addEventListener('click', (event) => {
@@ -107,35 +83,14 @@ card.addEventListener('click', (event) => {
     // Call toggle highlight function
     toggleHighlight(learnerId, mentorId);
   }
-});
-
-
-
-async function renderCards() {
-  const learners = await fetchData();
-  const container = document.querySelector('.cards');
-
-  learners.forEach(learner => {
-    // Create a new card for the learner
-const card = createCard({ fullName: 'Bob Johnson' });
-
+// Create a new card for the learner
+ const card = createCard({ fullName: 'Bob Johnson' });
 // Append the card to the container
-container.appendChild(card);
-  });
-}
-
-renderCards();
-
-
-
-  // Select the footer element
+ container.appendChild(card);
+// Select the footer element
 const footer = document.querySelector('footer');
-
 // Set the text content of the footer
 footer.textContent = "© BLOOM INSTITUTE OF TECHNOLOGY 2023";
-  // 👆 WORK WORK ABOVE THIS LINE 👆
-}
-
 // ❗ DO NOT CHANGE THE CODE  BELOW
 if (typeof module !== 'undefined' && module.exports) module.exports = { sprintChallenge5 }
 else sprintChallenge5()
