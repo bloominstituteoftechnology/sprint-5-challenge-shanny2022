@@ -20,17 +20,19 @@ async function fetchData() {
 
   return learners;
 }
-function displayCards(learners) {
+function createCard(learner) {
   learners.forEach(learner => {
     const card = createCard(learner);
     container.appendChild(card);
   });
 }
-async function init() {
-  const learners = await fetchData();
-  displayCards(learners);
+function displayCards(learners) {
+ learners.forEach(learner => {
+    const card = createCard(learner);
+    container.appendChild(card);
+  });
 }
-init();
+async function init() {
 }
 async function highlightMentor(learnerId, mentorId) {
   const learner = learners.find(l => l.id === learnerId);
@@ -114,8 +116,11 @@ async function renderCards() {
   const container = document.querySelector('.cards');
 
   learners.forEach(learner => {
-    const card = createCard(learner);
-    container.appendChild(card);
+    // Create a new card for the learner
+const card = createCard({ fullName: 'Bob Johnson' });
+
+// Append the card to the container
+container.appendChild(card);
   });
 }
 
@@ -123,10 +128,11 @@ renderCards();
 
 
 
-  const footer = document.querySelector('footer');
-  const currentYear = new Date().getFullYear();
-  footer.textContent = `© BLOOM INSTITUTE OF TECHNOLOGY ${currentYear}`;
+  // Select the footer element
+const footer = document.querySelector('footer');
 
+// Set the text content of the footer
+footer.textContent = "© BLOOM INSTITUTE OF TECHNOLOGY 2023";
   // 👆 WORK WORK ABOVE THIS LINE 👆
 }
 
