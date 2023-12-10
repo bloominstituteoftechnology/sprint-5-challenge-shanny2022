@@ -49,23 +49,60 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
     });
     card.appendChild(mentors);
 
-    // Add an event listener to the card
+    return card;
+  }
+
+  async function fetchData() {
+    const [learnersResponse, mentorsResponse] = await Promise.all([
+      axios.get('http://localhost:3003/api/learners'),
+      axios.get('http://localhost:3003/api/mentors')
+    ]);
+
+    const mentors = mentorsResponse.data.reduce((acc, mentor) => {
+      acc[mentor.id] = mentor.name;
+      return acc;
+    }, {});
+
+    return learnersResponse.data.map(learner => ({
+      ...learner,
+      mentors: learner.mentors.map(id => mentors[id])
+    }));
+  }
+
+  async function renderCards() {
+    const learners = await fetchData();
+    const container = document.querySelector('.cards');
+
+    learners.forEach(learner => {
+      const card = createCard(learner);
+      container.appendChild(card);
+    });
+  }
+  renderCards();
+
+        // Add an event listener to the card
     card.addEventListener('click', () => {
       // Change the text content and class names of some elements as per the design
       name.textContent = 'Clicked!';
       name.className = 'clicked-name';
       email.className = 'clicked-email';
       mentors.className = 'clicked-mentors';
+
+      learners.forEach(learner => {
+        const card = createCard(learner);
+        card.addEventListener('click', (event) => {
+          // Select the specific element within the card
+          const element = card.querySelector('.specific-element-class');
+
+          // Update the text content of the element
+          element.textContent = `New text content for ${learner.name}`;
+        });
+        container.appendChild(card);
+      });
+
+
     });
 
-    return card;
-  }
-
-  // Assuming container is a DOM element where the cards are appended
-  learners.forEach(learner => {
-    const card = createCard(learner);
-    container.appendChild(card);
-  });
 
   // Select the footer element
 const footer = document.querySelector('footer');
