@@ -5,7 +5,7 @@
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
 
-  // Select the header element
+ // Select the header element
 const header = document.querySelector('header');
 
 // Create a new element for the selected learner
@@ -14,24 +14,25 @@ selectedLearner.textContent = "No learner is selected";
 header.appendChild(selectedLearner);
 
 async function fetchData() {
-    try {
-      const learnersResponse = await axios.get('http://localhost:3003/api/learners');
-      const mentorsResponse = await axios.get('http://localhost:3003/api/mentors');
+  try {
+    const learnersResponse = await axios.get('http://localhost:3003/api/learners');
+    const mentorsResponse = await axios.get('http://localhost:3003/api/mentors');
 
-      const learnersData = learnersResponse.data;
-      const mentorsData = mentorsResponse.data;
-      // Combine the data obtained from Endpoint A and Endpoint B into a single data structure
-      const combinedData = {
-        learners: learnersData,
-        mentors: mentorsData,
-      };
-      // Call a function to render the learners and their cards
-      renderLearners(combinedData);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
+    const learnersData = learnersResponse.data;
+    const mentorsData = mentorsResponse.data;
+
+    // Combine the data obtained from Endpoint A and Endpoint B into a single data structure
+    const combinedData = {
+      learners: learnersData,
+      mentors: mentorsData,
+    };
+
+    // Call a function to render the learners and their cards
+    renderLearners(combinedData);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
 }
-fetchData();
 
 function renderLearners(data) {
   const container = document.querySelector('.cards');
@@ -80,6 +81,7 @@ function renderLearners(data) {
     container.appendChild(card);
   });
 
+  const arrows = document.querySelectorAll('.mentors-arrow');
   arrows.forEach(arrow => {
     arrow.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -93,6 +95,8 @@ function renderLearners(data) {
 const footer = document.querySelector('footer');
 // Set the text content of the footer
 footer.textContent = "© BLOOM INSTITUTE OF TECHNOLOGY 2023";
+
+fetchData();
   // 👆 WORK WORK ABOVE THIS LINE 👆
 }
 
