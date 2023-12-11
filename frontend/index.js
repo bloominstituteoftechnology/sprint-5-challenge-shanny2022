@@ -4,8 +4,12 @@
 
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
-  function main() {
-  }
+
+  await fetchData(); // Reuse existing fetchData method
+  // Render learners on DOM
+  // Render mentors on DOM
+  // Render mentors for each learner on DOM
+  const cards = document.querySelector('.cards');
   const header = document.querySelector('header');
     const selectedLearner = document.createElement('h3');
     selectedLearner.textContent = "No learner is selected";
@@ -22,6 +26,7 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
           learners: learnersData,
           mentors: mentorsData,
         };
+
 
         renderLearners(combinedData);
       } catch (error) {
