@@ -14,7 +14,6 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
     const selectedLearner = document.createElement('h3');
     selectedLearner.textContent = "No learner is selected";
     header.appendChild(selectedLearner);
-
     async function fetchData() {
       try {
         const learnersResponse = await axios.get('http://localhost:3003/api/learners');
@@ -27,6 +26,7 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
           mentors: mentorsData,
         };
 
+        const cards = document.querySelector('.cards'); // Move this line here
 
         renderLearners(combinedData);
       } catch (error) {
