@@ -12,14 +12,12 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
       const learnersData = learnersResponse.data;
       const mentorsData = mentorsResponse.data;
-
       // Combine the data obtained from Endpoint A and Endpoint B into a single data structure
       const combinedData = {
         learners: learnersData,
         mentors: mentorsData,
       };
-
-      // Call a function to render the learners and their cards
+       // Call a function to render the learners and their cards
       renderLearners(combinedData);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -28,67 +26,60 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
 
   fetchData();
 
-  function generateLearnerCard(learner) {
-    return `
-      <div class="card">
-        <h2>${learner.fullName}</h2>
-        <p>Email: ${learner.email}</p>
-        <p>Mentors: ${learner.mentors.join(', ')}</p>
-      </div>
-    `;
-  }
-
-
   function renderLearners(data) {
-    const container = document.querySelector('.cards'); // or whatever the selector for your container is
-
-    if (!container) {
-      console.error('Container element not found');
-      return;
-    }
+    const container = document.querySelector('.cards');
 
     data.learners.forEach(learner => {
-      const card = generateLearnerCard(learner);
-      container.insertAdjacentHTML('beforeend', card);
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const name = document.createElement('h3');
+      name.textContent = learner.fullName; // Use the correct property name
+      card.appendChild(name);
+
+       // Add the email
+       const email = document.createElement('div');
+       email.textContent = learner.email;
+       card.appendChild(email);
+       // Add the arrow
+       const arrow = document.createElement('div');
+       arrow.className = 'mentors-arrow';
+       arrow.textContent = 'Mentors';
+       card.appendChild(arrow);
+        // Add a click event listener to the card
+      card.addEventListener('click', () => {
+        // Show the ID beside the name when the card is clicked
+        name.textContent = `${learner.fullName} (ID: ${learner.id})`;
+      });
+
+        const mentorsList = document.createElement('ul');
+      mentorsList.className = 'mentors-list';
+      mentorsList.style.display = 'none';
+      learner.mentors.forEach(mentor => {
+        const mentorItem = document.createElement('li');
+        mentorItem.textContent = mentor;
+        mentorsList.appendChild(mentorItem);
+      }
+      );
+      card.appendChild(mentorsList);
+
+      container.appendChild(card);
     });
- // Add event listeners to the cards
- const cards = container.querySelectorAll('.card');
- cards.forEach(card => {
-   card.addEventListener('click', event => {
-     // Handle click event here
-     // For example, toggle a class
-     event.currentTarget.classList.toggle('active');
+    // Add event listeners to the arrows
+    const arrows = document.querySelectorAll('.mentors-arrow');
+    arrows.forEach(arrow => {
+      arrow.addEventListener('click', () => {
+        const mentorsList = arrow.nextElementSibling;
+        mentorsList.style.display = mentorsList.style.display === 'none' ? 'block' : 'none';
+  });
 
-     // Or change the text content of an element
-     const h2 = event.currentTarget.querySelector('h2');
-     if (h2) {
-       h2.textContent = 'Clicked!';
-     }
-   });
-   });
-   }
-
-   const element = screen.queryByText("No learner is selected");
-if (element) {
-  // Element found, perform your assertions or actions here
-} else {
-  // Element not found, handle the case accordingly
-}
-console.log(ulElement); // Log the value of the ulElement variable
-expect(ulElement).not.toBeVisible();
-
-console.log(cardElement.classList); // Log the classList of the cardElement
-expect(cardElement.classList.contains('selected')).toBe(true);
-
-console.log(infoElement.style.visibility); // Log the visibility of the infoElement
-expect(infoElement).toBeVisible();
-
-console.log(infoElement.style.visibility); // Log the visibility of the infoElement
-expect(infoElement).toBeVisible();
-
-console.log(card1.classList.contains('selected')); // Log the value of the "selected" class for card1
-console.log(card2.classList.contains('selected')); // Log the value of the "selected" class for card2
-expect(card1.classList.contains('selected')).toBe(true);
+    });
+  }
+  // Fetch the data and create the learner cards
+  fetch('path/to/your/data.json')
+  .then(response => response.json())
+  .then(data => createLearnerCards(data))
+  .catch(error => console.error('Error:', error));
 
       // Select the footer element
 const footer = document.querySelector('footer');
