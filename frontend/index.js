@@ -55,27 +55,26 @@ learner.mentors.forEach(mentorId => {
 
 card.appendChild(mentorsList);
 
-// ...
-
 const arrow = document.createElement('div');
 arrow.className = 'mentors-arrow';
+arrow.textContent = 'Mentors';
+card.appendChild(arrow);
 
 const mentorsHeader = document.createElement('h4'); // Create the 'Mentors' h4 element
 mentorsHeader.textContent = 'Mentors';
 mentorsHeader.className = 'closed'; // Initially, the mentors list is closed
 arrow.appendChild(mentorsHeader); // Append the h4 element to the arrow div
 
-// ...
 
 arrow.addEventListener('click', (event) => {
   event.stopPropagation(); // Prevent the event from bubbling up to the card
 
   if (mentorsList.style.display === 'none') {
     mentorsList.style.display = 'block';
-    mentorsHeader.className = 'open'; // The mentors list is open
+    mentorsList.classList.remove('closed'); // Remove the 'closed' class when the list is displayed
   } else {
     mentorsList.style.display = 'none';
-    mentorsHeader.className = 'closed'; // The mentors list is closed
+    mentorsList.classList.add('closed'); // Add the 'closed' class when the list is not displayed
   }
 });
 
