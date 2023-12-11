@@ -6,6 +6,7 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
   // 👇 WORK WORK BELOW THIS LINE 👇
 
   await fetchData(); // Reuse existing fetchData method
+  
   // Render learners on DOM
   // Render mentors on DOM
   // Render mentors for each learner on DOM
@@ -87,28 +88,24 @@ card.addEventListener('click', () => {
     selectedCard.querySelector('ul').style.display = 'none';
     selectedCard.querySelector('ul').classList.add('closed'); // Add the 'closed' class when the list is not displayed
   });
-// Assuming mentorsTitle is the h4 element
-let mentorsTitle = document.querySelector('h4');
 
-if (!mentorsDisplayed) {
-  mentorsList.style.display = 'block'; // Show the mentors list
-  mentorsTitle.classList.remove('closed'); // Remove the 'closed' class from the h4
-  mentorsTitle.classList.add('open'); // Add the 'open' class to the h4
-  selectedLearner.textContent = `The selected learner is ${learner.fullName}`;
-  card.classList.add('selected');
-  mentorsDisplayed = true;
-} else {
-  mentorsList.style.display = 'none'; // Hide the mentors list
-  mentorsTitle.classList.remove('open'); // Remove the 'open' class from the h4
-  mentorsTitle.classList.add('closed'); // Add the 'closed' class to the h4
-  selectedLearner.textContent = "No learner is selected";
-  card.classList.remove('selected');
-  mentorsDisplayed = false;
-}
+  if (!mentorsDisplayed) {
+    mentorsList.style.display = 'block'; // Show the mentors list
+    mentorsList.classList.remove('closed'); // Remove the 'closed' class when the list is displayed
+    selectedLearner.textContent = `The selected learner is ${learner.fullName}`;
+    card.classList.add('selected');
+    mentorsDisplayed = true;
+  } else {
+    mentorsList.style.display = 'none'; // Hide the mentors list
+    mentorsList.classList.add('closed'); // Add the 'closed' class when the list is not displayed
+    selectedLearner.textContent = "No learner is selected";
+    card.classList.remove('selected');
+    mentorsDisplayed = false;
+  }
 });
 
 container.appendChild(card);
-});
+      });
 
       const arrows = document.querySelectorAll('.mentors-arrow');
       arrows.forEach(arrow => {
