@@ -66,51 +66,49 @@ arrow.className = 'mentors-arrow';
 arrow.textContent = 'Mentors';
 card.appendChild(arrow);
 
+
 arrow.addEventListener('click', (event) => {
   event.stopPropagation(); // Prevent the event from bubbling up to the card
 
   if (mentorsList.style.display === 'none') {
-  mentorsList.style.display = 'block';
-
-  // Select all list items within the mentors list
-  const listItems = mentorsList.querySelectorAll('li');
-
-  // Loop over each list item and update its text content
-  listItems.forEach((item, index) => {
-    if (item) { // Check if the item is not null or undefined
-      // Assuming the mentors data is an array of objects with firstName and lastName properties
-      const mentor = mentorsData[index];
-      item.textContent = `${mentor.firstName} ${mentor.lastName}`;
-    }
-  });
-} else {
-  mentorsList.style.display = 'none';
+    mentorsList.style.display = 'block';
+    mentorsList.classList.remove('closed'); // Remove the 'closed' class when the list is displayed
+  } else {
+    mentorsList.style.display = 'none';
+    mentorsList.classList.add('closed'); // Add the 'closed' class when the list is not displayed
   }
 });
 
 let mentorsDisplayed = false; // Track whether the mentors are displayed
 
 card.addEventListener('click', () => {
-          document.querySelectorAll('.card.selected').forEach(selectedCard => {
-            selectedCard.classList.remove('selected');
-            selectedCard.querySelector('ul').style.display = 'none';
-          });
+  document.querySelectorAll('.card.selected').forEach(selectedCard => {
+    selectedCard.classList.remove('selected');
+    selectedCard.querySelector('ul').style.display = 'none';
+    selectedCard.querySelector('ul').classList.add('closed'); // Add the 'closed' class when the list is not displayed
+  });
+// Assuming mentorsTitle is the h4 element
+let mentorsTitle = document.querySelector('h4');
 
-          if (!mentorsDisplayed) {
-            mentorsList.style.display = 'block'; // Show the mentors list
-            selectedLearner.textContent = `The selected learner is ${learner.fullName}`;
-            card.classList.add('selected');
-            mentorsDisplayed = true;
-          } else {
-            mentorsList.style.display = 'none'; // Hide the mentors list
-            selectedLearner.textContent = "No learner is selected";
-            card.classList.remove('selected');
-            mentorsDisplayed = false;
-          }
-        });
+if (!mentorsDisplayed) {
+  mentorsList.style.display = 'block'; // Show the mentors list
+  mentorsTitle.classList.remove('closed'); // Remove the 'closed' class from the h4
+  mentorsTitle.classList.add('open'); // Add the 'open' class to the h4
+  selectedLearner.textContent = `The selected learner is ${learner.fullName}`;
+  card.classList.add('selected');
+  mentorsDisplayed = true;
+} else {
+  mentorsList.style.display = 'none'; // Hide the mentors list
+  mentorsTitle.classList.remove('open'); // Remove the 'open' class from the h4
+  mentorsTitle.classList.add('closed'); // Add the 'closed' class to the h4
+  selectedLearner.textContent = "No learner is selected";
+  card.classList.remove('selected');
+  mentorsDisplayed = false;
+}
+});
 
-        container.appendChild(card);
-      });
+container.appendChild(card);
+});
 
       const arrows = document.querySelectorAll('.mentors-arrow');
       arrows.forEach(arrow => {
