@@ -25,7 +25,6 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
   }
 
   fetchData();
-
   function renderLearners(data) {
     const container = document.querySelector('.cards');
 
@@ -34,54 +33,63 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
       card.className = 'card';
 
       const name = document.createElement('h3');
-      name.textContent = learner.fullName; // Use the correct property name
+      name.textContent = learner.fullName;
       card.appendChild(name);
 
-       // Add the email
-       const email = document.createElement('div');
-       email.textContent = learner.email;
-       card.appendChild(email);
-       // Add the arrow
-       const arrow = document.createElement('div');
-       arrow.className = 'mentors-arrow';
-       arrow.textContent = 'Mentors';
-       card.appendChild(arrow);
-        // Add a click event listener to the card
+      const email = document.createElement('div');
+      email.textContent = learner.email;
+      card.appendChild(email);
+
+      const arrow = document.createElement('div');
+      arrow.className = 'mentors-arrow';
+      arrow.textContent = 'Mentors';
+      card.appendChild(arrow);
+
       card.addEventListener('click', () => {
-        // Show the ID beside the name when the card is clicked
-        name.textContent = `${learner.fullName} (ID: ${learner.id})`;
+        if (name.textContent === learner.fullName) {
+          name.textContent = `${learner.fullName} (ID: ${learner.id})`;
+        } else {
+          name.textContent = learner.fullName;
+        }
       });
 
-        const mentorsList = document.createElement('ul');
+      const mentorsList = document.createElement('ul');
       mentorsList.className = 'mentors-list';
       mentorsList.style.display = 'none';
-      learner.mentors.forEach(mentor => {
+      learner.mentors.forEach(mentorId => {
+        const mentor = data.mentors.find(m => m.id === mentorId);
         const mentorItem = document.createElement('li');
-        mentorItem.textContent = mentor;
+        mentorItem.textContent = mentor ? mentor.name : 'Mentor not found';
         mentorsList.appendChild(mentorItem);
-      }
-      );
+      });
       card.appendChild(mentorsList);
 
       container.appendChild(card);
     });
-    // Add event listeners to the arrows
+
     const arrows = document.querySelectorAll('.mentors-arrow');
     arrows.forEach(arrow => {
-      arrow.addEventListener('click', () => {
+      arrow.addEventListener('click', (event) => {
+        event.stopPropagation();
         const mentorsList = arrow.nextElementSibling;
         mentorsList.style.display = mentorsList.style.display === 'none' ? 'block' : 'none';
-  });
-
+      });
     });
   }
   // Fetch the data and create the learner cards
   fetch('path/to/your/data.json')
   .then(response => response.json())
-  .then(data => createLearnerCards(data))
-  .catch(error => console.error('Error:', error));
+  .then(data => createLearnerCards(data)).catch(error => console.error('Error:', error));
+  async function createLearnerCards(data) {
+    // Call function to render learners and their cards
+    renderLearners(data);
+  }
+  // Select the header element
+  const header = document.querySelector('header');
+  // Set the text content of the header
+  header.textContent = "Welcome to the Learner Dashboard";
 
-      // Select the footer element
+// Select the footer element
 const footer = document.querySelector('footer');
 
 // Set the text content of the footer
