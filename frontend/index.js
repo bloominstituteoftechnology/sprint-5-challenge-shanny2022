@@ -5,104 +5,69 @@
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
 
-  axios.all([
-    axios.get('http://localhost:3003/api/learners'),
-    axios.get('http://localhost:3003/api/mentors'),
-  ]).then(axios.spread((learnersResponse, mentorsResponse) => {
-    const learners = learnersResponse.data;
-    const mentors = mentorsResponse.data;
-  }))
+  async function fetchData() {
+    try {
+      const learnersResponse = await axios.get('http://localhost:3003/api/learners');
+      const mentorsResponse = await axios.get('http://localhost:3003/api/mentors');
 
-      async function fetchData() {
-        // Fetch data from both endpoints concurrently
-        const [learnersResponse, mentorsResponse] = await Promise.all([
-          axios.get('http://localhost:3003/api/learners'),
-          axios.get('http://localhost:3003/api/mentors'),
-        ]);
+      const learnersData = learnersResponse.data;
+      const mentorsData = mentorsResponse.data;
 
-        // Extract the data from the responses
-        const [learners, mentors] = await Promise.all([
-          // Call fetchData function
-          fetchData(),
-          // Call fetchData function
-          fetchData()
-        ]);
+      // Combine the data obtained from Endpoint A and Endpoint B into a single data structure
+      const combinedData = {
+        learners: learnersData,
+        mentors: mentorsData,
+      };
 
-        // Replace mentor IDs in learners' data with actual mentor names
-        learners.forEach(learner => {
-          learner.mentors = learner.mentors.map(mentorId => {
-            const mentor = mentors.find(mentor => mentor.id === mentorId);
-            return mentor ? mentor.name : 'Unknown Mentor';
-          });
-        }
-        );
-          // Return the combined data
-        return learners;
-      }
-      // Select the container element where cards will be rendered
-      const container = document.getElementById('container');
-      // Fetch learner data and call createCard for each learner
-      const learners = await fetchData();
-      learners.forEach(learner => {
-        const card = createCard(learner);
-        container.appendChild(card);
-      });
-      // Create a new Learner Card element
-      function createCard(learner) {
-        // Create a new div element for the card
-        const card = document.createElement('div');
-        card.className = 'card';
+      // Call a function to render the learners and their cards
+      renderLearners(combinedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  }
 
-        // Create a new h3 element for the learner's name
-        const name = document.createElement('h3');
-        name.textContent = learner.name;
-        card.appendChild(name);
+  fetchData();
 
-        // Create a new ul element for the list of mentors
-        const mentorsList = document.createElement('ul');
-        learner.mentors.forEach(mentor => {
-          const mentorItem = document.createElement('li');
-          mentorItem.textContent = mentor;
-          mentorsList.appendChild(mentorItem);
-        });
-        card.appendChild(mentorsList);
+  function generateLearnerCard(learner) {
+    return `
+      <div class="card">
+        <h2>${learner.fullName}</h2>
+        <p>Email: ${learner.email}</p>
+        <p>Mentors: ${learner.mentors.join(', ')}</p>
+      </div>
+    `;
+  }
 
-        // Return the Learner Card element
-        return card;
-      }
-      async function renderCards() {
-        // Fetch the combined data
-        const learners = await fetchData();
 
-        // Select the container where the cards will be appended
-        const container = document.querySelector('.cards');
+  function renderLearners(data) {
+    const container = document.querySelector('.cards'); // or whatever the selector for your container is
 
-        // Loop over the data
-        learners.forEach(learner => {
-          // Generate a Learner Card for each learner
-          const card = createCard(learner);
+    if (!container) {
+      console.error('Container element not found');
+      return;
+    }
 
-          // Add a click event listener to the card
-          card.addEventListener('click', (event) => {
-            // If the clicked element is the h3 (name), toggle the 'highlight' class
-            if (event.target.tagName === 'H3') {
-              card.classList.toggle('highlight');
-            }
+    data.learners.forEach(learner => {
+      const card = generateLearnerCard(learner);
+      container.insertAdjacentHTML('beforeend', card);
+    });
+ // Add event listeners to the cards
+ const cards = container.querySelectorAll('.card');
+ cards.forEach(card => {
+   card.addEventListener('click', event => {
+     // Handle click event here
+     // For example, toggle a class
+     event.currentTarget.classList.toggle('active');
 
-            // If the clicked element is the ul (mentors list), toggle the 'collapsed' class
-            if (event.target.tagName === 'UL') {
-              event.target.classList.toggle('collapsed');
-            }
-          });
+     // Or change the text content of an element
+     const h2 = event.currentTarget.querySelector('h2');
+     if (h2) {
+       h2.textContent = 'Clicked!';
+     }
+   });
+   });
+   }
 
-          // Append the card to the DOM
-          container.appendChild(card);
-        });
-      }
-
-      // Call the renderCards function
-      renderCards();
-      
       // Select the footer element
 const footer = document.querySelector('footer');
 
