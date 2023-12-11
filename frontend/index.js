@@ -68,6 +68,28 @@ async function sprintChallenge5() { // Note the async keyword, in case you wish 
    });
    }
 
+   const element = screen.queryByText("No learner is selected");
+if (element) {
+  // Element found, perform your assertions or actions here
+} else {
+  // Element not found, handle the case accordingly
+}
+console.log(ulElement); // Log the value of the ulElement variable
+expect(ulElement).not.toBeVisible();
+
+console.log(cardElement.classList); // Log the classList of the cardElement
+expect(cardElement.classList.contains('selected')).toBe(true);
+
+console.log(infoElement.style.visibility); // Log the visibility of the infoElement
+expect(infoElement).toBeVisible();
+
+console.log(infoElement.style.visibility); // Log the visibility of the infoElement
+expect(infoElement).toBeVisible();
+
+console.log(card1.classList.contains('selected')); // Log the value of the "selected" class for card1
+console.log(card2.classList.contains('selected')); // Log the value of the "selected" class for card2
+expect(card1.classList.contains('selected')).toBe(true);
+
       // Select the footer element
 const footer = document.querySelector('footer');
 
