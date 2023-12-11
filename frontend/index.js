@@ -5,155 +5,99 @@
 async function sprintChallenge5() { // Note the async keyword, in case you wish to use `await` inside sprintChallenge5
   // 👇 WORK WORK BELOW THIS LINE 👇
 
-  // Select the header element
+  const header = document.querySelector('header');
+  const selectedLearner = document.createElement('h3');
+  selectedLearner.textContent = "No learner is selected";
+  header.appendChild(selectedLearner);
 
-const header = document.querySelector('header');
+  async function fetchData() {
+    try {
+      const learnersResponse = await axios.get('http://localhost:3003/api/learners');
+      const mentorsResponse = await axios.get('http://localhost:3003/api/mentors');
+      const learnersData = learnersResponse.data;
+      const mentorsData = mentorsResponse.data;
 
-// Create a new element for the selected learner
+      const combinedData = {
+        learners: learnersData,
+        mentors: mentorsData,
+      };
 
-const selectedLearner = document.createElement('h3');
-
-selectedLearner.textContent = "No learner is selected";
-
-header.appendChild(selectedLearner);
-
-async function fetchData() {
-
-  try {
-
-    const learnersResponse = await axios.get('http://localhost:3003/api/learners');
-
-    const mentorsResponse = await axios.get('http://localhost:3003/api/mentors');
-
-    const learnersData = learnersResponse.data;
-
-    const mentorsData = mentorsResponse.data;
-
-    // Combine the data obtained from Endpoint A and Endpoint B into a single data structure
-
-    const combinedData = {
-
-      learners: learnersData,
-
-      mentors: mentorsData,
-
-    };
-
-    // Call a function to render the learners and their cards
-
-    renderLearners(combinedData);
-
-  } catch (error) {
-
-    console.error('Error fetching data:', error);
-
+      renderLearners(combinedData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
   }
 
-}
+  function renderLearners(data) {
+    const container = document.querySelector('.cards');
 
-function renderLearners(data) {
+    data.learners.forEach(learner => {
+      const card = document.createElement('div');
+      card.className = 'card';
 
-  const container = document.querySelector('.cards');
+      const name = document.createElement('h3');
+      name.textContent = learner.fullName;
+      card.appendChild(name);
 
-  data.learners.forEach(learner => {
+      const email = document.createElement('p');
+      email.textContent = learner.email;
+      card.appendChild(email);
 
-    const card = document.createElement('div');
+      const mentorsList = document.createElement('ul');
+      mentorsList.style.display = 'none'; // Hide the mentors list initially
 
-    card.className = 'card';
+      learner.mentors.forEach(mentorId => {
+        const mentor = data.mentors.find(m => m.id === mentorId);
+        const mentorItem = document.createElement('li');
+        mentorItem.textContent = `${mentor.firstName} ${mentor.lastName}`;
+        mentorsList.appendChild(mentorItem);
+      });
 
-    const name = document.createElement('h3');
+      card.appendChild(mentorsList);
 
-    name.textContent = learner.fullName;
+      const arrow = document.createElement('div');
+      arrow.className = 'mentors-arrow';
+      arrow.textContent = 'Mentors';
+      card.appendChild(arrow);
 
-    card.appendChild(name);
+      let mentorsDisplayed = false; // Track whether the mentors are displayed
 
-    const email = document.createElement('p');
+      card.addEventListener('click', () => {
+        document.querySelectorAll('.card.selected').forEach(selectedCard => {
+          selectedCard.classList.remove('selected');
+          selectedCard.querySelector('ul').style.display = 'none';
+        });
 
-    email.textContent = learner.email;
+        if (!mentorsDisplayed) {
+          mentorsList.style.display = 'block'; // Show the mentors list
+          selectedLearner.textContent = `The selected learner is ${learner.fullName}`;
+          card.classList.add('selected');
+          mentorsDisplayed = true;
+        } else {
+          mentorsList.style.display = 'none'; // Hide the mentors list
+          selectedLearner.textContent = "No learner is selected";
+          card.classList.remove('selected');
+          mentorsDisplayed = false;
+        }
+      });
 
-    card.appendChild(email);
-
-    const mentorsList = document.createElement('ul');
-
-    mentorsList.style.display = 'none'; // Hide the mentors list initially
-
-    learner.mentors.forEach(mentor => {
-
-      const mentorItem = document.createElement('li');
-
-      mentorItem.textContent = mentor.name;
-
-      mentorsList.appendChild(mentorItem);
-
+      container.appendChild(card);
     });
 
-    card.appendChild(mentorsList);
-
-    const arrow = document.createElement('div');
-
-    arrow.className = 'mentors-arrow';
-
-    arrow.textContent = 'Mentors';
-
-    card.appendChild(arrow);
-
-    let mentorsDisplayed = false; // Track whether the mentors are displayed
-
-    // The event listener is added inside the forEach loop
-
-    card.addEventListener('click', () => {
-
-      if (!mentorsDisplayed) {
-
-        mentorsList.style.display = 'block'; // Show the mentors list
-
-        selectedLearner.textContent = `The selected learner is ${learner.fullName}`;
-
-        mentorsDisplayed = true;
-
-      } else {
-
-        mentorsList.style.display = 'none'; // Hide the mentors list
-
-        selectedLearner.textContent = "No learner is selected";
-
-        mentorsDisplayed = false;
-
-      }
-
+    const arrows = document.querySelectorAll('.mentors-arrow');
+    arrows.forEach(arrow => {
+      arrow.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const mentorsList = arrow.parentNode.querySelector('ul');
+        mentorsList.style.display = mentorsList.style.display === 'none' ? 'block' : 'none';
+      });
     });
+  }
 
-    container.appendChild(card);
+  const footer = document.querySelector('footer');
+  footer.textContent = "© BLOOM INSTITUTE OF TECHNOLOGY 2023";
 
-  });
-
-  const arrows = document.querySelectorAll('.mentors-arrow');
-
-  arrows.forEach(arrow => {
-
-    arrow.addEventListener('click', (event) => {
-
-      event.stopPropagation();
-
-      const mentorsList = arrow.parentNode.querySelector('ul'); // Use parentNode and querySelector
-
-      mentorsList.style.display = mentorsList.style.display === 'none' ? 'block' : 'none';
-
-    });
-
-  });
-
-}
-
-// Select the footer element
-
-const footer = document.querySelector('footer');
-
-// Set the text content of the footer
-
-footer.textContent = "© BLOOM INSTITUTE OF TECHNOLOGY 2023";
-
-fetchData();
+  fetchData();
   // 👆 WORK WORK ABOVE THIS LINE 👆
 }
 // ❗ DO NOT CHANGE THE CODE  BELOW
